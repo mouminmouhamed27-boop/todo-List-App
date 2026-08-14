@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المهام</title>
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --border:#e5e7eb;
+    --text:#111827;
+    --text-soft:#6b7280;
+    --accent:#4f46e5;
+    --accent-hover:#4338ca;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --danger-soft:#fee2e2;
+    --radius:12px;
+    --shadow: 0 1px 3px rgba(17,24,39,.06), 0 1px 2px rgba(17,24,39,.04);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:var(--bg);
+    font-family:"Segoe UI", "Cairo", Tahoma, sans-serif;
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    padding:64px 20px;
+  }
+  .app{
+    width:100%;
+    max-width:600px;
+  }
+
+  .top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:24px;
+  }
+  h1{
+    font-size:1.6rem;
+    font-weight:700;
+    margin:0;
+    letter-spacing:-.3px;
+  }
+  .status{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:.82rem;
+    color:var(--text-soft);
+  }
+  .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:#9ca3af;
+    flex:0 0 auto;
+  }
+  .dot.online{ background:var(--success); }
+  .dot.offline{ background:var(--danger); }
+
+  .error-banner{
+    background:var(--danger-soft);
+    color:#991b1b;
+    border-radius:var(--radius);
+    padding:12px 16px;
+    margin-bottom:16px;
+    font-size:.88rem;
+    display:none;
+  }
+
+  form.add-form{
+    display:flex;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .add-form input{
+    flex:1;
+    padding:13px 16px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--surface);
+    font-size:.95rem;
+    color:var(--text);
+    box-shadow:var(--shadow);
+  }
+  .add-form input::placeholder{ color:#9ca3af; }
+  .add-form input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(79,70,229,.12);
+  }
+  .add-form button{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:var(--radius);
+    padding:0 24px;
+    font-size:.95rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .add-form button:hover{ background:var(--accent-hover); }
+  .add-form button:active{ transform:scale(.97); }
+  .add-form button:disabled{ opacity:.6; cursor:not-allowed; }
+
+  ul.list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  li.item{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:var(--shadow);
+    animation: fadeIn .2s ease;
+  }
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(-4px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* checkbox is placed visually on the left regardless of RTL text flow */
+  .checkbox{
+    order:-1;
+    width:21px;height:21px;
+    border:2px solid #d1d5db;
+    border-radius:6px;
+    flex:0 0 auto;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    background:#fff;
+    transition:.15s;
+  }
+  .checkbox:hover{ border-color:var(--accent); }
+  .checkbox.done{
+    background:var(--success);
+    border-color:var(--success);
+  }
+  .checkbox.done::after{
+    content:"";
+    width:5px;height:9px;
+    border-right:2px solid #fff;
+    border-bottom:2px solid #fff;
+    transform:rotate(45deg) translate(-1px,-1px);
+  }
+
+  .item-title{
+    flex:1;
+    font-size:.95rem;
+    word-break:break-word;
+    outline:none;
+    padding:2px 4px;
+    border-radius:6px;
+  }
+  .item-title:focus{
+    box-shadow:0 0 0 2px rgba(79,70,229,.15);
+  }
+  .item-title.done{
+    text-decoration: line-through;
+    color:var(--text-soft);
+  }
+
+  .icon-btn{
+    order:1;
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-size:1rem;
+    padding:6px;
+    border-radius:8px;
+    color:#9ca3af;
+    line-height:0;
+    transition:.15s;
+    flex:0 0 auto;
+  }
+  .icon-btn:hover{ background:var(--danger-soft); color:var(--danger); }
+
+  .empty{
+    text-align:center;
+    color:var(--text-soft);
+    padding:48px 10px;
+    font-size:.92rem;
+  }
+  .loading{
+    text-align:center;
+    color:var(--text-soft);
+    padding:24px;
+    font-size:.9rem;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <h1>المهام</h1>
+    <div class="status">
+      <span id="statusDot" class="dot"></span>
+      <span id="statusText">جاري الاتصال...</span>
+    </div>
+  </div>
+
+  <div id="errorBanner" class="error-banner"></div>
+
+  <form id="addForm" class="add-form">
+    <input id="titleInput" type="text" placeholder="اكتب مهمة جديدة..." autocomplete="off" required />
+    <button type="submit" id="addBtn">إضافة</button>
+  </form>
+
+  <div id="loading" class="loading">جاري التحميل...</div>
+  <ul id="list" class="list"></ul>
+  <div id="emptyState" class="empty" style="display:none">لا توجد مهام حاليًا</div>
+</div>
+
+<script>
+  const API_BASE_URL = "http://localhost:3000";
+
+  const listEl = document.getElementById("list");
+  const loadingEl = document.getElementById("loading");
+  const emptyEl = document.getElementById("emptyState");
+  const errorBanner = document.getElementById("errorBanner");
+  const statusDot = document.getElementById("statusDot");
+  const statusText = document.getElementById("statusText");
+  const addForm = document.getElementById("addForm");
+  const titleInput = document.getElementById("titleInput");
+  const addBtn = document.getElementById("addBtn");
+
+  function showError(msg) {
+    errorBanner.textContent = msg;
+    errorBanner.style.display = "block";
+  }
+  function clearError() {
+    errorBanner.style.display = "none";
+  }
+  function setOnline(isOnline) {
+    statusDot.className = "dot " + (isOnline ? "online" : "offline");
+    statusText.textContent = isOnline ? "متصل بالسيرفر" : "غير متصل";
+  }
+
+  async function apiRequest(path, options = {}) {
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+    let body = null;
+    try { body = await res.json(); } catch (_) {}
+    if (!res.ok) {
+      const message = (body && body.message) || `خطأ في السيرفر (${res.status})`;
+      throw new Error(message);
+    }
+    return body;
+  }
+
+  function renderTodos(todos) {
+    listEl.innerHTML = "";
+
+    if (todos.length === 0) {
+      emptyEl.style.display = "block";
+      return;
+    }
+    emptyEl.style.display = "none";
+
+    todos.forEach((todo) => {
+      const li = document.createElement("li");
+      li.className = "item";
+      li.dataset.id = todo.id;
+
+      const checkbox = document.createElement("div");
+      checkbox.className = "checkbox" + (todo.completed ? " done" : "");
+      checkbox.title = "تم الإنجاز";
+      checkbox.addEventListener("click", () => toggleComplete(todo));
+
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "item-title" + (todo.completed ? " done" : "");
+      titleSpan.textContent = todo.title;
+      titleSpan.contentEditable = "true";
+      titleSpan.spellcheck = false;
+      titleSpan.addEventListener("blur", () => {
+        const newTitle = titleSpan.textContent.trim();
+        if (newTitle && newTitle !== todo.title) {
+          editTitle(todo, newTitle);
+        } else {
+          titleSpan.textContent = todo.title;
+        }
+      });
+      titleSpan.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); titleSpan.blur(); }
+      });
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "icon-btn";
+      delBtn.textContent = "✕";
+      delBtn.title = "حذف";
+      delBtn.addEventListener("click", () => removeTodo(todo));
+
+      li.appendChild(checkbox);
+      li.appendChild(titleSpan);
+      li.appendChild(delBtn);
+      listEl.appendChild(li);
+    });
+  }
+
+  async function loadTodos() {
+    loadingEl.style.display = "block";
+    clearError();
+    try {
+      const res = await apiRequest("/todos");
+      setOnline(true);
+      renderTodos(res.data || []);
+    } catch (err) {
+      setOnline(false);
+      showError("تعذر تحميل المهام: " + err.message);
+      renderTodos([]);
+    } finally {
+      loadingEl.style.display = "none";
+    }
+  }
+
+  async function addTodo(title) {
+    clearError();
+    addBtn.disabled = true;
+    try {
+      await apiRequest("/todos", {
+        method: "POST",
+        body: JSON.stringify({ title }),
+      });
+      titleInput.value = "";
+      await loadTodos();
+    } catch (err) {
+      showError("تعذرت إضافة المهمة: " + err.message);
+    } finally {
+      addBtn.disabled = false;
+    }
+  }
+
+  async function toggleComplete(todo) {
+    clearError();
+    try {
+      await apiRequest(`/todos/${todo.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ completed: !todo.completed }),
+      });
+      await loadTodos();
+    } catch (err) {
+      showError("تعذر تعديل المهمة: " + err.message);
+    }
+  }
+
+  async function editTitle(todo, newTitle) {
+    clearError();
+    try {
+      await apiRequest(`/todos/${todo.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ title: newTitle }),
+      });
+      await loadTodos();
+    } catch (err) {
+      showError("تعذر تعديل العنوان: " + err.message);
+      await loadTodos();
+    }
+  }
+
+  async function removeTodo(todo) {
+    clearError();
+    try {
+      await apiRequest(`/todos/${todo.id}`, { method: "DELETE" });
+      await loadTodos();
+    } catch (err) {
+      showError("تعذر حذف المهمة: " + err.message);
+    }
+  }
+
+  addForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = titleInput.value.trim();
+    if (!title) return;
+    addTodo(title);
+  });
+
+  loadTodos();
+</script>
+</body>
+</html>
