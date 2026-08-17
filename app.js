@@ -41,7 +41,6 @@ app.use("/todos", ensureDatabase);
 app.use("/admin", ensureDatabase);
 app.use(authRoutes);
 app.use(todoRoutes);
-app.use(adminRoutes);
 
 app.get("/", (_req, res) => res.sendFile(path.join(frontendDir, "login.html")));
 app.get("/login", (_req, res) =>
@@ -56,7 +55,7 @@ app.get("/tasks", (_req, res) =>
 app.get("/admin", (_req, res) =>
   res.sendFile(path.join(frontendDir, "admin.html")),
 );
-
+app.use(adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
