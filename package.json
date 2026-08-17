@@ -1,0 +1,27 @@
+{
+  "name": "todo-fullstack",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Full-stack Todo app with Express, MongoDB, JWT authentication, and a browser frontend",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "create-admin": "node Backend/scripts/createAdmin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

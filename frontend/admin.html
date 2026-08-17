@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم - Admin</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --text-soft: #6b7280;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --danger-soft: #fee2e2;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(17, 24, 39, .06), 0 1px 2px rgba(17, 24, 39, .04);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: "Segoe UI", "Cairo", Tahoma, sans-serif;
+      color: var(--text);
+      padding: 32px 20px 64px;
+    }
+
+    .app { max-width: 1100px; margin: 0 auto; }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    h1 { font-size: 1.6rem; font-weight: 700; margin: 0; letter-spacing: -.3px; }
+    h2 { font-size: 1.1rem; font-weight: 700; margin: 0 0 12px; }
+
+    .top-actions { display: flex; gap: 10px; }
+
+    button, .btn {
+      font-family: inherit;
+      font-size: .9rem;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 14px;
+      transition: background .15s, border-color .15s;
+    }
+
+    button:hover { background: #f3f4f6; }
+
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-danger { color: var(--danger); border-color: var(--danger-soft); }
+    .btn-danger:hover { background: var(--danger-soft); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card .label { color: var(--text-soft); font-size: .82rem; margin-bottom: 6px; }
+    .card .value { font-size: 1.7rem; font-weight: 700; }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      font-family: inherit;
+      font-size: .9rem;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      min-width: 220px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 640px; }
+
+    th, td {
+      text-align: right;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th { color: var(--text-soft); font-weight: 600; font-size: .8rem; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    .badge-admin { background: #ede9fe; color: #6d28d9; }
+    .badge-user { background: #e5e7eb; color: #374151; }
+    .badge-done { background: #dcfce7; color: #15803d; }
+    .badge-pending { background: #fef3c7; color: #b45309; }
+
+    select {
+      font-family: inherit;
+      font-size: .85rem;
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .row-actions { display: flex; gap: 8px; }
+
+    .empty, .loading, .error {
+      text-align: center;
+      color: var(--text-soft);
+      padding: 24px;
+    }
+
+    .error { color: var(--danger); }
+
+    .gate {
+      max-width: 420px;
+      margin: 80px auto;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
+    }
+
+    .gate p { color: var(--text-soft); }
+  </style>
+</head>
+
+<body>
+  <div id="gate" class="gate" style="display:none;">
+    <h2>غير مصرح بالدخول</h2>
+    <p id="gateMessage">هذه الصفحة مخصصة للمشرفين فقط.</p>
+    <a class="btn btn-primary" href="/tasks" style="text-decoration:none; display:inline-block;">العودة إلى المهام</a>
+  </div>
+
+  <div id="app" class="app" style="display:none;">
+    <div class="top">
+      <h1>لوحة تحكم المشرف</h1>
+      <div class="top-actions">
+        <a class="btn" href="/tasks" style="text-decoration:none;">مهامي</a>
+        <button id="logoutBtn" class="btn-danger">تسجيل الخروج</button>
+      </div>
+    </div>
+
+    <div class="cards" id="statsCards">
+      <div class="card"><div class="label">إجمالي المستخدمين</div><div class="value" id="statUsers">—</div></div>
+      <div class="card"><div class="label">إجمالي المهام</div><div class="value" id="statTasks">—</div></div>
+      <div class="card"><div class="label">المهام المكتملة</div><div class="value" id="statCompleted">—</div></div>
+      <div class="card"><div class="label">المهام المعلقة</div><div class="value" id="statPending">—</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>المستخدمون</h2>
+        <input type="text" id="userSearch" placeholder="بحث بالاسم أو الإيميل...">
+      </div>
+      <div id="usersTableWrap"><div class="loading">جاري التحميل...</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>المهام</h2></div>
+      <div id="tasksTableWrap"><div class="loading">جاري التحميل...</div></div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    const { apiRequest, getCurrentUser, clearAuth, getToken } = window.todoAuth;
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str ?? "";
+      return div.innerHTML;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return "-";
+      const d = new Date(iso);
+      return d.toLocaleDateString("ar-EG", { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    async function guardAdmin() {
+      if (!getToken()) {
+        window.location.href = "/login";
+        return false;
+      }
+      try {
+        // Real authorization check happens server-side; this call both
+        // verifies the token and confirms the caller is an admin.
+        await apiRequest("/admin/stats");
+        return true;
+      } catch (err) {
+        document.getElementById("gate").style.display = "block";
+        document.getElementById("gateMessage").textContent =
+          err.message && err.message.includes("Forbidden")
+            ? "هذه الصفحة مخصصة للمشرفين فقط."
+            : "الرجاء تسجيل الدخول مرة أخرى.";
+        return false;
+      }
+    }
+
+    async function loadStats() {
+      const res = await apiRequest("/admin/stats");
+      const s = res.data;
+      document.getElementById("statUsers").textContent = s.totalUsers;
+      document.getElementById("statTasks").textContent = s.totalTasks;
+      document.getElementById("statCompleted").textContent = s.completedTasks;
+      document.getElementById("statPending").textContent = s.pendingTasks;
+    }
+
+    async function loadUsers(search) {
+      const wrap = document.getElementById("usersTableWrap");
+      wrap.innerHTML = '<div class="loading">جاري التحميل...</div>';
+      try {
+        const qs = search ? `?search=${encodeURIComponent(search)}` : "";
+        const res = await apiRequest(`/admin/users${qs}`);
+        renderUsers(res.data);
+      } catch (err) {
+        wrap.innerHTML = `<div class="error">${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    function renderUsers(users) {
+      const wrap = document.getElementById("usersTableWrap");
+      if (!users.length) {
+        wrap.innerHTML = '<div class="empty">لا يوجد مستخدمون</div>';
+        return;
+      }
+
+      const me = getCurrentUser();
+
+      const rows = users.map((u) => `
+        <tr data-id="${u.id}">
+          <td>${escapeHtml(u.name)}</td>
+          <td>${escapeHtml(u.email)}</td>
+          <td>
+            <select class="roleSelect" data-id="${u.id}" ${u.id === me?.id ? "disabled" : ""}>
+              <option value="user" ${u.role === "user" ? "selected" : ""}>user</option>
+              <option value="admin" ${u.role === "admin" ? "selected" : ""}>admin</option>
+            </select>
+          </td>
+          <td>${u.numberOfTasks}</td>
+          <td>${formatDate(u.createdAt)}</td>
+          <td class="row-actions">
+            <button class="btn-danger deleteUserBtn" data-id="${u.id}" ${u.id === me?.id ? "disabled" : ""}>حذف</button>
+          </td>
+        </tr>
+      `).join("");
+
+      wrap.innerHTML = `
+        <table>
+          <thead>
+            <tr><th>الاسم</th><th>الإيميل</th><th>الدور</th><th>المهام</th><th>تاريخ الإنشاء</th><th>إجراءات</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+
+      wrap.querySelectorAll(".roleSelect").forEach((select) => {
+        select.addEventListener("change", async (e) => {
+          const id = e.target.dataset.id;
+          const newRole = e.target.value;
+          if (!confirm(`تغيير دور هذا المستخدم إلى "${newRole}"؟`)) {
+            loadUsers(document.getElementById("userSearch").value);
+            return;
+          }
+          try {
+            await apiRequest(`/admin/users/${id}/role`, {
+              method: "PATCH",
+              body: JSON.stringify({ role: newRole }),
+            });
+            await loadUsers(document.getElementById("userSearch").value);
+            await loadStats();
+          } catch (err) {
+            alert(err.message);
+            loadUsers(document.getElementById("userSearch").value);
+          }
+        });
+      });
+
+      wrap.querySelectorAll(".deleteUserBtn").forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          const id = e.target.dataset.id;
+          if (!confirm("حذف هذا المستخدم وكل مهامه؟ هذا الإجراء لا يمكن التراجع عنه.")) return;
+          try {
+            await apiRequest(`/admin/users/${id}`, { method: "DELETE" });
+            await loadUsers(document.getElementById("userSearch").value);
+            await loadStats();
+            await loadTasks();
+          } catch (err) {
+            alert(err.message);
+          }
+        });
+      });
+    }
+
+    async function loadTasks() {
+      const wrap = document.getElementById("tasksTableWrap");
+      wrap.innerHTML = '<div class="loading">جاري التحميل...</div>';
+      try {
+        const res = await apiRequest("/admin/tasks");
+        renderTasks(res.data);
+      } catch (err) {
+        wrap.innerHTML = `<div class="error">${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    function renderTasks(tasks) {
+      const wrap = document.getElementById("tasksTableWrap");
+      if (!tasks.length) {
+        wrap.innerHTML = '<div class="empty">لا توجد مهام</div>';
+        return;
+      }
+
+      const rows = tasks.map((t) => `
+        <tr>
+          <td>${escapeHtml(t.title)}</td>
+          <td>${t.owner ? escapeHtml(t.owner.name) + " (" + escapeHtml(t.owner.email) + ")" : "—"}</td>
+          <td><span class="badge ${t.completed ? "badge-done" : "badge-pending"}">${t.completed ? "مكتملة" : "معلقة"}</span></td>
+          <td>${formatDate(t.createdAt)}</td>
+        </tr>
+      `).join("");
+
+      wrap.innerHTML = `
+        <table>
+          <thead><tr><th>المهمة</th><th>صاحب المهمة</th><th>الحالة</th><th>تاريخ الإنشاء</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    let searchTimer;
+    document.getElementById("userSearch").addEventListener("input", (e) => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => loadUsers(e.target.value), 300);
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      clearAuth();
+      window.location.href = "/login";
+    });
+
+    (async function init() {
+      const ok = await guardAdmin();
+      if (!ok) return;
+      document.getElementById("app").style.display = "block";
+      await Promise.all([loadStats(), loadUsers(), loadTasks()]);
+    })();
+  </script>
+</body>
+
+</html>
