@@ -55,6 +55,7 @@ app.get("/tasks", (_req, res) =>
 app.get("/admin", (_req, res) =>
   res.sendFile(path.join(frontendDir, "admin.html")),
 );
+// Admin API routes
 app.use(adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
