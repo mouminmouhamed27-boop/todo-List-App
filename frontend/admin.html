@@ -21,9 +21,15 @@
       --shadow: 0 1px 3px rgba(17, 24, 39, .06), 0 1px 2px rgba(17, 24, 39, .04);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html, body { margin: 0; padding: 0; }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       min-height: 100vh;
@@ -33,7 +39,10 @@
       padding: 32px 20px 64px;
     }
 
-    .app { max-width: 1100px; margin: 0 auto; }
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
 
     .top {
       display: flex;
@@ -44,12 +53,26 @@
       gap: 12px;
     }
 
-    h1 { font-size: 1.6rem; font-weight: 700; margin: 0; letter-spacing: -.3px; }
-    h2 { font-size: 1.1rem; font-weight: 700; margin: 0 0 12px; }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -.3px;
+    }
 
-    .top-actions { display: flex; gap: 10px; }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
 
-    button, .btn {
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button,
+    .btn {
       font-family: inherit;
       font-size: .9rem;
       cursor: pointer;
@@ -61,13 +84,28 @@
       transition: background .15s, border-color .15s;
     }
 
-    button:hover { background: #f3f4f6; }
+    button:hover {
+      background: #f3f4f6;
+    }
 
-    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
 
-    .btn-danger { color: var(--danger); border-color: var(--danger-soft); }
-    .btn-danger:hover { background: var(--danger-soft); }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-danger {
+      color: var(--danger);
+      border-color: var(--danger-soft);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger-soft);
+    }
 
     .cards {
       display: grid;
@@ -84,8 +122,16 @@
       padding: 18px;
     }
 
-    .card .label { color: var(--text-soft); font-size: .82rem; margin-bottom: 6px; }
-    .card .value { font-size: 1.7rem; font-weight: 700; }
+    .card .label {
+      color: var(--text-soft);
+      font-size: .82rem;
+      margin-bottom: 6px;
+    }
+
+    .card .value {
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
 
     .panel {
       background: var(--surface);
@@ -115,16 +161,26 @@
       min-width: 220px;
     }
 
-    table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 640px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+      min-width: 640px;
+    }
 
-    th, td {
+    th,
+    td {
       text-align: right;
       padding: 10px 12px;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
     }
 
-    th { color: var(--text-soft); font-weight: 600; font-size: .8rem; }
+    th {
+      color: var(--text-soft);
+      font-weight: 600;
+      font-size: .8rem;
+    }
 
     .badge {
       display: inline-block;
@@ -134,10 +190,25 @@
       font-weight: 600;
     }
 
-    .badge-admin { background: #ede9fe; color: #6d28d9; }
-    .badge-user { background: #e5e7eb; color: #374151; }
-    .badge-done { background: #dcfce7; color: #15803d; }
-    .badge-pending { background: #fef3c7; color: #b45309; }
+    .badge-admin {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .badge-user {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .badge-done {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-pending {
+      background: #fef3c7;
+      color: #b45309;
+    }
 
     select {
       font-family: inherit;
@@ -147,15 +218,22 @@
       border: 1px solid var(--border);
     }
 
-    .row-actions { display: flex; gap: 8px; }
+    .row-actions {
+      display: flex;
+      gap: 8px;
+    }
 
-    .empty, .loading, .error {
+    .empty,
+    .loading,
+    .error {
       text-align: center;
       color: var(--text-soft);
       padding: 24px;
     }
 
-    .error { color: var(--danger); }
+    .error {
+      color: var(--danger);
+    }
 
     .gate {
       max-width: 420px;
@@ -168,7 +246,9 @@
       padding: 32px;
     }
 
-    .gate p { color: var(--text-soft); }
+    .gate p {
+      color: var(--text-soft);
+    }
   </style>
 </head>
 
@@ -189,10 +269,22 @@
     </div>
 
     <div class="cards" id="statsCards">
-      <div class="card"><div class="label">إجمالي المستخدمين</div><div class="value" id="statUsers">—</div></div>
-      <div class="card"><div class="label">إجمالي المهام</div><div class="value" id="statTasks">—</div></div>
-      <div class="card"><div class="label">المهام المكتملة</div><div class="value" id="statCompleted">—</div></div>
-      <div class="card"><div class="label">المهام المعلقة</div><div class="value" id="statPending">—</div></div>
+      <div class="card">
+        <div class="label">إجمالي المستخدمين</div>
+        <div class="value" id="statUsers">—</div>
+      </div>
+      <div class="card">
+        <div class="label">إجمالي المهام</div>
+        <div class="value" id="statTasks">—</div>
+      </div>
+      <div class="card">
+        <div class="label">المهام المكتملة</div>
+        <div class="value" id="statCompleted">—</div>
+      </div>
+      <div class="card">
+        <div class="label">المهام المعلقة</div>
+        <div class="value" id="statPending">—</div>
+      </div>
     </div>
 
     <div class="panel">
@@ -200,19 +292,23 @@
         <h2>المستخدمون</h2>
         <input type="text" id="userSearch" placeholder="بحث بالاسم أو الإيميل...">
       </div>
-      <div id="usersTableWrap"><div class="loading">جاري التحميل...</div></div>
+      <div id="usersTableWrap">
+        <div class="loading">جاري التحميل...</div>
+      </div>
     </div>
 
     <div class="panel">
-      <div class="panel-head"><h2>المهام</h2></div>
-      <div id="tasksTableWrap"><div class="loading">جاري التحميل...</div></div>
+      <div class="panel-head">
+        <h2>المهام</h2>
+      </div>
+      <div id="tasksTableWrap">
+        <div class="loading">جاري التحميل...</div>
+      </div>
     </div>
   </div>
 
   <script src="auth.js"></script>
   <script>
-    const { apiRequest, getCurrentUser, clearAuth, getToken } = window.todoAuth;
-
     function escapeHtml(str) {
       const div = document.createElement("div");
       div.textContent = str ?? "";
@@ -226,14 +322,14 @@
     }
 
     async function guardAdmin() {
-      if (!getToken()) {
+      if (!window.todoAuth.getToken()) {
         window.location.href = "/login";
         return false;
       }
       try {
         // Real authorization check happens server-side; this call both
         // verifies the token and confirms the caller is an admin.
-        await apiRequest("/admin/stats");
+        await window.todoAuth.apiRequest("/admin/stats");
         return true;
       } catch (err) {
         document.getElementById("gate").style.display = "block";
@@ -246,7 +342,7 @@
     }
 
     async function loadStats() {
-      const res = await apiRequest("/admin/stats");
+      const res = await window.todoAuth.apiRequest("/admin/stats");
       const s = res.data;
       document.getElementById("statUsers").textContent = s.totalUsers;
       document.getElementById("statTasks").textContent = s.totalTasks;
@@ -259,7 +355,7 @@
       wrap.innerHTML = '<div class="loading">جاري التحميل...</div>';
       try {
         const qs = search ? `?search=${encodeURIComponent(search)}` : "";
-        const res = await apiRequest(`/admin/users${qs}`);
+        const res = await window.todoAuth.apiRequest(`/admin/users${qs}`);
         renderUsers(res.data);
       } catch (err) {
         wrap.innerHTML = `<div class="error">${escapeHtml(err.message)}</div>`;
@@ -273,7 +369,7 @@
         return;
       }
 
-      const me = getCurrentUser();
+      const me = window.todoAuth.getCurrentUser();
 
       const rows = users.map((u) => `
         <tr data-id="${u.id}">
@@ -311,7 +407,7 @@
             return;
           }
           try {
-            await apiRequest(`/admin/users/${id}/role`, {
+            await window.todoAuth.apiRequest(`/admin/users/${id}/role`, {
               method: "PATCH",
               body: JSON.stringify({ role: newRole }),
             });
@@ -329,7 +425,7 @@
           const id = e.target.dataset.id;
           if (!confirm("حذف هذا المستخدم وكل مهامه؟ هذا الإجراء لا يمكن التراجع عنه.")) return;
           try {
-            await apiRequest(`/admin/users/${id}`, { method: "DELETE" });
+            await window.todoAuth.apiRequest(`/admin/users/${id}`, { method: "DELETE" });
             await loadUsers(document.getElementById("userSearch").value);
             await loadStats();
             await loadTasks();
@@ -344,7 +440,7 @@
       const wrap = document.getElementById("tasksTableWrap");
       wrap.innerHTML = '<div class="loading">جاري التحميل...</div>';
       try {
-        const res = await apiRequest("/admin/tasks");
+        const res = await window.todoAuth.apiRequest("/admin/tasks");
         renderTasks(res.data);
       } catch (err) {
         wrap.innerHTML = `<div class="error">${escapeHtml(err.message)}</div>`;
@@ -382,7 +478,7 @@
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
-      clearAuth();
+      window.todoAuth.clearAuth();
       window.location.href = "/login";
     });
 
