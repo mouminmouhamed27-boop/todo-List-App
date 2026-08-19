@@ -41,7 +41,9 @@ app.use("/todos", ensureDatabase);
 app.use("/admin", ensureDatabase);
 app.use(authRoutes);
 app.use(todoRoutes);
-
+app.use("/ai", ensureDatabase);
+const aiRoutes = require("./Backend/routes/aiRoutes");
+app.use(aiRoutes);
 app.get("/", (_req, res) => res.sendFile(path.join(frontendDir, "login.html")));
 app.get("/login", (_req, res) =>
   res.sendFile(path.join(frontendDir, "login.html")),
